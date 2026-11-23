@@ -1,8 +1,9 @@
 """Tests for the starter Recipe & Meal Planner."""
 
 import json
+import pytest
 
-from recipe_utils import filter_by_category, load_config, load_recipes, search_by_name
+from recipe_utils import filter_by_category, load_config, load_recipes, search_by_ingredient, search_by_name
 
 
 def test_search_by_name_finds_partial_match():
@@ -79,3 +80,24 @@ def test_load_recipes_reads_json(tmp_path):
     ]
     recipe_file.write_text(json.dumps(sample), encoding="utf-8")
     assert load_recipes(recipe_file) == sample
+
+@pytest.fixture
+def sample_recipes():
+    return [
+        {"name": "Chicken Alfredo", "ingredients": [{"name": "chicken breast"}, {"name": "fettuccine"}]},
+        {"name": "Berry Smoothie", "ingredients": [{"name": "strawberries"}, {"name": "milk"}]},
+    ]
+@pytest.mark.parametrize(
+    "search_term, expected_names",
+    [
+        ("milk", ["Berry Smoothie"]),          # exact match
+        ("chicken", ["Chicken Alfredo"]),      # partial match
+        ("FETTUCCINE", ["Chicken Alfredo"]),   # case-insensitive
+    ],
+)
+def test_search_by_ingredient_finds_matches(sample_recipes, search_term, expected_names):
+    result = search_by_ingredient(sample_recipes, search_term)
+    assert [r["name"] for r in result] == expected_names
+
+def test_search_by_ingredient_returns_empty_list_when_no_match(sample_recipes):
+    assert search_by_ingredient(sample_recipes, "salmon") == []
