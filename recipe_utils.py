@@ -33,3 +33,15 @@ def filter_by_category(recipes, category):
         for recipe in recipes
         if recipe["category"].lower() == category
     ]
+
+def search_by_ingredient(recipes, ingredient):
+    """Returns recipes that contain the given ingredient"""
+    ingredient = ingredient.lower()
+    matches = []
+
+    for recipe in recipes:
+        for item in recipe["ingredients"]:
+            if ingredient in item["name"].lower():
+                matches.append(recipe)
+                break
+    return matches
