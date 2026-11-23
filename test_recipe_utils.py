@@ -3,7 +3,7 @@
 import json
 import pytest
 
-from recipe_utils import filter_by_category, load_config, load_recipes, search_by_ingredient, search_by_name
+from recipe_utils import random_recipe, filter_by_category, load_config, load_recipes, search_by_ingredient, search_by_name
 
 
 def test_search_by_name_finds_partial_match():
@@ -101,3 +101,14 @@ def test_search_by_ingredient_finds_matches(sample_recipes, search_term, expecte
 
 def test_search_by_ingredient_returns_empty_list_when_no_match(sample_recipes):
     assert search_by_ingredient(sample_recipes, "salmon") == []
+
+def test_random_recipe_returns_recipe_from_list(sample_recipes):
+    result = random_recipe(sample_recipes)
+    assert result in sample_recipes
+
+def test_random_recipe_returns_none_for_empty_list():
+    assert random_recipe([]) is None
+
+def test_random_recipe_returns_only_recipe_in_single_item_list():
+    recipes = [{"name": "Berry Smoothie", "ingredients": []}]
+    assert random_recipe(recipes) == recipes[0]

@@ -1,6 +1,7 @@
 """Utility functions for the Recipe & Meal Planner."""
 
 import json
+import random
 
 
 def load_config(filename):
@@ -45,3 +46,9 @@ def search_by_ingredient(recipes, ingredient):
                 matches.append(recipe)
                 break
     return matches
+
+def random_recipe(recipes):
+    """Returns a randomly selected recipe, or None if there are no recipes."""
+    if not recipes:
+        return None
+    return random.choice(recipes)
